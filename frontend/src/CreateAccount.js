@@ -85,7 +85,7 @@ function CreateAccount({ setPage }) {
         <option value="saving">Saving</option>
         <option value="zero">Zero</option>
       </select>
-
+<br/>
       <button onClick={handleSubmit}>Create</button>
 
       {msg && <p className="success">{msg}</p>}
