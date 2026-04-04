@@ -33,12 +33,12 @@ class BANK:
         account_no = random.randint(10**9, 10**10 - 1)
 
         cursor.execute("""
-        INSERT INTO holder_details
-        (Account_Number,Account_Type,Holder_Name,Age,Mobile,Aadhar,IFSC,Balance)
-        VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
-        """, (
-            account_no, account_type, name, age, mobile, aadhar, "IFSC0123", balance
-        ))
+    INSERT INTO holder_details
+    (account_number, account_type, name, age, mobile, aadhar, balance)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """, (
+        account_no, account_type, name, age, mobile, aadhar, balance
+    ))
 
         con.commit()
         con.close()
