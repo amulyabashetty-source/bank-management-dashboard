@@ -1,70 +1,154 @@
-# Getting Started with Create React App
+# Banking Management Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack banking application built using React (frontend) and Flask (backend).
+This project simulates basic banking operations with a clean dashboard UI.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+* Create Bank Account
+* Deposit Money
+* Withdraw Money
+* Check Account Balance
+* Transaction History
+* Dashboard with Summary Cards
+* Transaction Chart (Recharts)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+Frontend:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* React.js
+* CSS (Custom UI)
+* Recharts (Charts)
 
-### `npm run build`
+Backend:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Python (Flask)
+* MySQL
+* Flask-CORS
+* Gunicorn (for deployment)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Project Structure
 
-### `npm run eject`
+banking-app/
+│
+├── backend/
+│   ├── app.py
+│   ├── db.py
+│   ├── bank.py
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+└── README.md
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## How to Run Locally
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 1. Clone Repository
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+git clone https://github.com/amulyabashetty-source/bank-management-dashboard.git
+cd bank-management-dashboard
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 2. Backend Setup
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+cd backend
 
-### Code Splitting
+Create virtual environment:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+python -m venv venv
 
-### Analyzing the Bundle Size
+Activate:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Windows:
+venv\Scripts\activate
 
-### Making a Progressive Web App
+Install dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+pip install -r requirements.txt
 
-### Advanced Configuration
+Run server:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+python app.py
 
-### Deployment
+Server runs on:
+http://127.0.0.1:5000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+### 3. Frontend Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+cd frontend
+
+Install dependencies:
+
+npm install
+
+Run app:
+
+npm start
+
+App runs on:
+http://localhost:3000
+
+---
+
+## API Endpoints
+
+* GET /transactions/<account_number>
+* GET /balance/<account_number>
+* POST /deposit
+* POST /withdraw
+* POST /create-account
+
+---
+
+## Screenshots
+
+(Add your screenshots here)
+
+---
+
+## Deployment
+
+Frontend:
+
+* Vercel
+
+Backend:
+
+* Render
+
+---
+
+## Future Improvements
+
+* User Authentication (Login / Signup)
+* JWT Security
+* Mobile Responsive UI Enhancements
+* Payment Gateway Integration
+
+---
+
+## Author
+
+Amulya Bashetty
+GitHub: https://github.com/amulyabashetty-source
+
+---
+
+## Note
+
+This is a learning project created to demonstrate full-stack development skills.
