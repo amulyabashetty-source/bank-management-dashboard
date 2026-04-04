@@ -1,31 +1,50 @@
 import { useState } from "react";
 
-function Balance({ setPage }) {
+function Balance() {
   const [acc, setAcc] = useState("");
   const [balance, setBalance] = useState("");
+  const [error, setError] = useState("");
 
   const handleCheck = async () => {
-    const res = await fetch("http://127.0.0.1:5000/balance", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ account_number: acc }),
-    });
+    if (!acc) {
+      setError("Enter account number");
+      return;
+    }
 
-    const data = await res.json();
-    setBalance(data.balance || data.error);
+    try {
+      setError("");
+      setBalance("");
+
+      const res = await fetch(
+        `https://bank-management-dashboard-dxy9.onrender.com/balance/${acc}`
+      );
+
+      const data = await res.json();
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setBalance(data.balance);
+      }
+    } catch {
+      setError("Server error");
+    }
   };
 
   return (
     <div className="card">
       <h2>Check Balance</h2>
 
-      <input placeholder="Account Number" onChange={(e)=>setAcc(e.target.value)}/>
+      <input
+        placeholder="Account Number"
+        value={acc}
+        onChange={(e) => setAcc(e.target.value)}
+      />
 
       <button onClick={handleCheck}>Check</button>
 
       {balance && <p className="success">Balance: ₹{balance}</p>}
-
-      
+      {error && <p className="error">{error}</p>}
     </div>
   );
 }
