@@ -17,10 +17,15 @@ import {
 
 function App() {
   const [page, setPage] = useState("dashboard");
-  const [account, setAccount] = useState(localStorage.getItem("account") || "");
+  const [account, setAccount] = useState(
+    localStorage.getItem("account") || ""
+  );
+
+  // ✅ FIX: pass setPage also
   if (!account) {
-    return <Login setAccount={setAccount} />;
+    return <Login setAccount={setAccount} setPage={setPage} />;
   }
+
   return (
     <div className="app-layout">
       {/* SIDEBAR */}
@@ -61,6 +66,7 @@ function App() {
         >
           <FaFileAlt /> Balance
         </button>
+
         <button
           className="logout-btn"
           onClick={() => {
@@ -76,6 +82,7 @@ function App() {
       <div className="main">
         <div className="content-wrapper">
           <h1 className="title">Banking Application</h1>
+
           {page === "dashboard" && <Dashboard />}
           {page === "create" && <CreateAccount setPage={setPage} />}
           {page === "deposit" && <Deposit />}
