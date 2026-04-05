@@ -40,7 +40,7 @@ function Withdraw() {
     } catch {
       setError("Server error");
     } finally {
-      setloading(false);
+      setLoading(false);
     }
   };
 
