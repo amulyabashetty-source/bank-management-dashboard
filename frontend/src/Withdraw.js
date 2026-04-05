@@ -5,7 +5,7 @@ function Withdraw() {
   const [amt, setAmt] = useState("");
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
-  const [loading,setloading]=useState("false");
+  const [loading, setLoading] = useState(false);
 
   const handleWithdraw = async () => {
     if (!acc || !amt) {
@@ -14,7 +14,7 @@ function Withdraw() {
     }
 
     try {
-      setloading(true);
+      setLoading(true);
       setError("");
       setMsg("");
 
@@ -39,7 +39,7 @@ function Withdraw() {
       }
     } catch {
       setError("Server error");
-    }finally{
+    } finally {
       setloading(false);
     }
   };

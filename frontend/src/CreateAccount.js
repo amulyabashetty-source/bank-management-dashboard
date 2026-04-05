@@ -79,7 +79,7 @@ function CreateAccount({ setPage }) {
       />
 
       <select
-        className="input"
+        className="custom-select"
         onChange={(e) => setForm({ ...form, account_type: e.target.value })}
       >
         <option value="saving">Saving</option>
