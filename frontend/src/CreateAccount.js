@@ -14,8 +14,31 @@ function CreateAccount({ setPage }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    if (loading) return;
+
+    //  EMPTY VALIDATION
     if (!form.name || !form.age || !form.mobile || !form.aadhar) {
       setError("Please fill all fields");
+      return;
+    }
+
+    //  AGE VALIDATION
+    if (form.age <= 0) {
+      setError("Age must be greater than 0");
+      return;
+    }
+
+    //  MOBILE VALIDATION (10 digits)
+    if (!/^[0-9]{10}$/.test(form.mobile)) {
+      setError("Mobile must be exactly 10 digits");
+      return;
+    }
+
+    //  AADHAR VALIDATION (12 digits)
+    const cleanAadhar = form.aadhar.replace(/\s/g, "");
+
+    if (!/^[0-9]{12}$/.test(cleanAadhar)) {
+      setError("Aadhar must be exactly 12 digits");
       return;
     }
 
@@ -34,6 +57,7 @@ function CreateAccount({ setPage }) {
           body: JSON.stringify({
             ...form,
             age: Number(form.age),
+            aadhar: cleanAadhar, 
           }),
         }
       );
@@ -59,28 +83,35 @@ function CreateAccount({ setPage }) {
 
       <input
         placeholder="Name"
+        value={form.name}
         onChange={(e) => setForm({ ...form, name: e.target.value })}
       />
 
       <input
         placeholder="Age"
         type="number"
+        value={form.age}
         onChange={(e) => setForm({ ...form, age: e.target.value })}
       />
 
       <input
-        placeholder="Mobile"
+        placeholder="Mobile (10 digits)"
+        value={form.mobile}
         onChange={(e) => setForm({ ...form, mobile: e.target.value })}
       />
 
       <input
-        placeholder="Aadhar"
+        placeholder="Aadhar (12 digits)"
+        value={form.aadhar}
         onChange={(e) => setForm({ ...form, aadhar: e.target.value })}
       />
 
       <select
         className="custom-select"
-        onChange={(e) => setForm({ ...form, account_type: e.target.value })}
+        value={form.account_type}
+        onChange={(e) =>
+          setForm({ ...form, account_type: e.target.value })
+        }
       >
         <option value="saving">Saving</option>
         <option value="zero">Zero</option>
@@ -90,7 +121,7 @@ function CreateAccount({ setPage }) {
         {loading ? "Creating..." : "Create"}
       </button>
 
-      {/* ✅ SUCCESS UI */}
+      {/* SUCCESS UI */}
       {msg && (
         <div className="success-box">
           <p>{msg}</p>
@@ -100,6 +131,7 @@ function CreateAccount({ setPage }) {
         </div>
       )}
 
+      {/*  ERROR UI */}
       {error && <p className="error">{error}</p>}
     </div>
   );

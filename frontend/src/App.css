@@ -163,6 +163,15 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.logout-btn {
+  margin-top: 20px;
+  background: #ff4d4d;
+}
+
+.logout-btn:hover {
+  background: #cc0000;
+}
+
 /* ===== SUCCESS BOX ===== */
 .success-box {
   margin-top: 15px;

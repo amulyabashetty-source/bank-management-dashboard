@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from bank import BANK
-from db import get_connection   # ✅ IMPORTANT FIX
+from db import get_connection 
 
 app = Flask(__name__)
 CORS(app)
@@ -77,7 +77,23 @@ def get_balance(acc):
     else:
         return jsonify({"error": "Account not found"})
 
+@app.route('/user/<acc>', methods=['GET'])
+def get_user(acc):
+    con = get_connection()
+    cursor = con.cursor(dictionary=True)
 
+    cursor.execute(
+        "SELECT name, account_number, balance FROM holder_details WHERE account_number=%s",
+        (acc,)
+    )
+
+    user = cursor.fetchone()
+    con.close()
+
+    if user:
+        return user
+    else:
+        return {"error": "User not found"}
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     app.run(debug=True)

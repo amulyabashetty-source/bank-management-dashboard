@@ -4,6 +4,7 @@ import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import Balance from "./Balance";
 import Dashboard from "./Dashboard";
+import Login from "./Login";
 import "./App.css";
 
 import {
@@ -16,7 +17,10 @@ import {
 
 function App() {
   const [page, setPage] = useState("dashboard");
-
+  const [account, setAccount] = useState(localStorage.getItem("account") || "");
+  if (!account) {
+    return <Login setAccount={setAccount} />;
+  }
   return (
     <div className="app-layout">
       {/* SIDEBAR */}
@@ -57,22 +61,29 @@ function App() {
         >
           <FaFileAlt /> Balance
         </button>
+        <button
+          className="logout-btn"
+          onClick={() => {
+            localStorage.removeItem("account");
+            setAccount("");
+          }}
+        >
+          Logout
+        </button>
       </div>
 
       {/* MAIN */}
       <div className="main">
-  <div className="content-wrapper">
+        <div className="content-wrapper">
+          <h1 className="title">Banking Application</h1>
 
-    <h1 className="title">Banking Application</h1>
-
-    {page === "dashboard" && <Dashboard />}
-    {page === "create" && <CreateAccount setPage={setPage}/>}
-    {page === "deposit" && <Deposit />}
-    {page === "withdraw" && <Withdraw />}
-    {page === "balance" && <Balance />}
-
-  </div>
-</div>
+          {page === "dashboard" && <Dashboard />}
+          {page === "create" && <CreateAccount setPage={setPage} />}
+          {page === "deposit" && <Deposit />}
+          {page === "withdraw" && <Withdraw />}
+          {page === "balance" && <Balance />}
+        </div>
+      </div>
     </div>
   );
 }

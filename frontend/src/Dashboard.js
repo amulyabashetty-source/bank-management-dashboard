@@ -1,15 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
 function Dashboard() {
-  const [acc, setAcc] = useState("");
+  const account = localStorage.getItem("account");
+
+  const [user, setUser] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [balance, setBalance] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+
+  //  AUTO LOAD DATA AFTER LOGIN
+  useEffect(() => {
+    if (account) {
+      fetchAllData(account);
+    }
+  }, [account]);
+
+  const fetchAllData = async (acc) => {
     if (!acc) {
-      setError("Enter account number");
+      setError("No account found. Please login.");
       return;
     }
 
@@ -17,23 +27,32 @@ function Dashboard() {
       setLoading(true);
       setError("");
 
-      const res1 = await fetch(
-        `https://bank-management-dashboard-dxy9.onrender.com/transactions/${acc}`,
+      //  USER DETAILS
+      const userRes = await fetch(
+        `https://bank-management-dashboard-dxy9.onrender.com/user/${acc}`
       );
-      const data1 = await res1.json();
+      const userData = await userRes.json();
 
-      const res2 = await fetch(
-        `https://bank-management-dashboard-dxy9.onrender.com/balance/${acc}`,
+      //  TRANSACTIONS
+      const txRes = await fetch(
+        `https://bank-management-dashboard-dxy9.onrender.com/transactions/${acc}`
       );
-      const data2 = await res2.json();
+      const txData = await txRes.json();
 
-      if (data2.error) {
-        setError(data2.error);
+      //  BALANCE
+      const balRes = await fetch(
+        `https://bank-management-dashboard-dxy9.onrender.com/balance/${acc}`
+      );
+      const balData = await balRes.json();
+
+      if (balData.error) {
+        setError(balData.error);
         return;
       }
 
-      setTransactions(data1.transactions || []);
-      setBalance(data2.balance);
+      setUser(userData);
+      setTransactions(txData.transactions || []);
+      setBalance(balData.balance);
     } catch {
       setError("Server error");
     } finally {
@@ -41,7 +60,7 @@ function Dashboard() {
     }
   };
 
-  // CALCULATIONS
+  //  CALCULATIONS
   const totalDeposit = transactions
     .filter((t) => t.type === "Deposit")
     .reduce((sum, t) => sum + t.amount, 0);
@@ -50,7 +69,6 @@ function Dashboard() {
     .filter((t) => t.type === "Withdraw")
     .reduce((sum, t) => sum + t.amount, 0);
 
-  // CHART DATA (clean)
   const chartData = [
     { type: "Deposit", amount: totalDeposit },
     { type: "Withdraw", amount: totalWithdraw },
@@ -60,18 +78,20 @@ function Dashboard() {
     <div className="dashboard-layout">
       {/* LEFT SIDE */}
       <div className="dashboard-left">
-        {/* INPUT */}
-        <div className="card input-card">
-          <h2>Dashboard</h2>
+        
+        {/* USER INFO */}
+        <div className="card">
+          <h2>Welcome</h2>
 
-          <input
-            placeholder="Enter Account Number"
-            value={acc}
-            onChange={(e) => setAcc(e.target.value)}
-          />
+          {user && (
+            <>
+              <p><b>Name:</b> {user.name}</p>
+              <p><b>Account No:</b> {user.account_number}</p>
+            </>
+          )}
 
-          <button onClick={fetchData} disabled={loading}>
-            {loading ? "Loading Data..." : "Load Data"}
+          <button onClick={() => fetchAllData(account)} disabled={loading}>
+            {loading ? "Loading..." : "Refresh"}
           </button>
 
           {error && <p className="error">{error}</p>}
@@ -81,7 +101,7 @@ function Dashboard() {
         {transactions.length > 0 && (
           <div className="summary-grid">
             <div className="summary-card">
-              <p>Current Balance</p>
+              <p>Balance</p>
               <h3>₹{balance}</h3>
             </div>
 
@@ -101,6 +121,7 @@ function Dashboard() {
       {/* RIGHT SIDE */}
       {transactions.length > 0 && (
         <div className="dashboard-right">
+          
           {/* CHART */}
           <div className="card">
             <h3>Transaction Chart</h3>
@@ -128,7 +149,7 @@ function Dashboard() {
               </thead>
 
               <tbody>
-                {transactions.map((t, i) => (
+                {transactions.slice(-5).reverse().map((t, i) => (
                   <tr key={i}>
                     <td>{t.type}</td>
                     <td>₹{t.amount}</td>
@@ -138,6 +159,7 @@ function Dashboard() {
               </tbody>
             </table>
           </div>
+
         </div>
       )}
     </div>

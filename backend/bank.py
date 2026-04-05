@@ -1,7 +1,6 @@
 import random
 from db import get_connection
 
-
 class BANK:
 
     def account_exists(self, acc):
@@ -17,7 +16,6 @@ class BANK:
         con.close()
         return data
 
-
     def create_account_api(self, data):
         con = get_connection()
         cursor = con.cursor()
@@ -32,6 +30,17 @@ class BANK:
 
         account_no = random.randint(10**7, 10**9 - 1)
 
+        cursor.execute(
+            "SELECT * FROM holder_details WHERE aadhar=%s",
+            (aadhar,)
+        )
+
+        existing = cursor.fetchone()
+
+        if existing:
+            con.close()
+            return {"error": "Account already exists with this Aadhar"}
+                
         cursor.execute("""
             INSERT INTO holder_details
             (account_number, account_type, name, age, mobile, aadhar, balance)

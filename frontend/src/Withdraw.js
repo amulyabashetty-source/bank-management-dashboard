@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 function Withdraw() {
-  const [acc, setAcc] = useState("");
+  const account = localStorage.getItem("account");
   const [amt, setAmt] = useState("");
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleWithdraw = async () => {
-    if (!acc || !amt) {
+    if (!account || !amt) {
       setError("Please fill all fields");
       return;
     }
@@ -24,7 +24,7 @@ function Withdraw() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            account_number: acc,
+            account_number: account,
             amount: Number(amt),
           }),
         },
@@ -48,11 +48,11 @@ function Withdraw() {
     <div className="card">
       <h2>Withdraw</h2>
 
-      <input
+      {/* <input
         placeholder="Account Number"
         value={acc}
         onChange={(e) => setAcc(e.target.value)}
-      />
+      /> */}
 
       <input
         placeholder="Amount"
