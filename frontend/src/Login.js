@@ -1,17 +1,31 @@
 import { useState } from "react";
 
-function Login({ setAccount }) {
+function Login({ setAccount, setPage }) {
   const [mobile, setMobile] = useState("");
   const [aadhar, setAadhar] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!mobile || !aadhar) {
-      setError("Enter all fields");
+      setError("Please enter all fields");
+      return;
+    }
+
+    if (mobile.length !== 10) {
+      setError("Mobile must be 10 digits");
+      return;
+    }
+
+    if (aadhar.replace(/\s/g, "").length !== 12) {
+      setError("Aadhar must be 12 digits");
       return;
     }
 
     try {
+      setLoading(true);
+      setError("");
+
       const res = await fetch(
         "https://bank-management-dashboard-dxy9.onrender.com/login",
         {
@@ -21,7 +35,7 @@ function Login({ setAccount }) {
             mobile: mobile.trim(),
             aadhar: aadhar.replace(/\s/g, ""),
           }),
-        },
+        }
       );
 
       const data = await res.json();
@@ -33,7 +47,9 @@ function Login({ setAccount }) {
         setAccount(data.account_number);
       }
     } catch {
-      setError("Server error");
+      setError("Server waking up... wait few seconds");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,18 +59,36 @@ function Login({ setAccount }) {
         <h2>Login</h2>
 
         <input
-          placeholder="Mobile"
+          placeholder="Mobile (10 digits)"
+          value={mobile}
           onChange={(e) => setMobile(e.target.value)}
         />
 
         <input
-          placeholder="Aadhar"
+          placeholder="Aadhar (12 digits)"
+          value={aadhar}
           onChange={(e) => setAadhar(e.target.value)}
         />
 
-        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleLogin} disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
         {error && <p className="error">{error}</p>}
+
+        <p style={{ textAlign: "center", marginTop: "15px" }}>
+          New user?{" "}
+          <span
+            style={{
+              color: "#4CAF50",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+            onClick={() => setPage("create")}
+          >
+            Create Account
+          </span>
+        </p>
       </div>
     </div>
   );
