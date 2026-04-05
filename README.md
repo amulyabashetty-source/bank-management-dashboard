@@ -71,7 +71,12 @@ bank-management-dashboard/
 │   │   ├── Withdraw.js
 │   │   ├── Login.js
 │   │   ├── index.js
-│   │   └── App.css
+│   │   ├── App.css
+│   │   │
+│   │   └── screenshots/
+│   │       ├── Dashboard.png
+│   │       └── Home.png
+│   │
 │   ├── package.json
 │
 ├── README.md
@@ -142,8 +147,13 @@ http://localhost:3000
 
 ## 📸 Screenshots
 
-(Add screenshots of your UI here)
+### 🔐 Login Page
+![Login Page](./frontend/src/screenshots/Login.png)
 
+---
+
+### 📊 Dashboard (Home Page)
+![Dashboard](./frontend/src/screenshots/Dashboard.png)
 ---
 
 ## 🚀 Deployment
