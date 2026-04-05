@@ -35,7 +35,8 @@ function Login({ setAccount }) {
   };
 
   return (
-    <div className="card">
+  <div className="login-container">
+    <div className="login-card">
       <h2>Login</h2>
 
       <input
@@ -52,7 +53,8 @@ function Login({ setAccount }) {
 
       {error && <p className="error">{error}</p>}
     </div>
-  );
+  </div>
+);
 }
 
 export default Login;
