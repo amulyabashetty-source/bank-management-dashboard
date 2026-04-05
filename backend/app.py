@@ -1,10 +1,21 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from bank import BANK
-from db import get_connection 
+from db import get_connection
 
 app = Flask(__name__)
-CORS(app)
+
+# ✅ CORS FIX (IMPORTANT)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+# ✅ HANDLE PREFLIGHT (VERY IMPORTANT)
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+    return response
+
 
 bank = BANK()
 
@@ -12,6 +23,33 @@ bank = BANK()
 @app.route("/")
 def home():
     return "Bank API Running"
+
+
+# ---------------- LOGIN (FIXED) ----------------
+@app.route('/login', methods=['POST', 'OPTIONS'])
+def login():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    data = request.json
+    mobile = data.get("mobile")
+    aadhar = data.get("aadhar")
+
+    con = get_connection()
+    cursor = con.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT account_number FROM holder_details WHERE mobile=%s AND aadhar=%s",
+        (mobile, aadhar)
+    )
+
+    user = cursor.fetchone()
+    con.close()
+
+    if user:
+        return jsonify({"account_number": user["account_number"]})
+    else:
+        return jsonify({"error": "Invalid details"})
 
 
 # ---------------- CORE APIs ----------------
@@ -59,15 +97,16 @@ def get_transactions(acc):
 
     return jsonify({"transactions": result})
 
+
 @app.route("/balance/<int:acc>", methods=["GET"])
 def get_balance(acc):
     con = get_connection()
     cursor = con.cursor()
 
     cursor.execute(
-    "SELECT balance FROM holder_details WHERE account_number=%s",
-    (acc,)
-)
+        "SELECT balance FROM holder_details WHERE account_number=%s",
+        (acc,)
+    )
 
     data = cursor.fetchone()
     con.close()
@@ -77,7 +116,8 @@ def get_balance(acc):
     else:
         return jsonify({"error": "Account not found"})
 
-@app.route('/user/<acc>', methods=['GET'])
+
+@app.route('/user/<int:acc>', methods=['GET'])
 def get_user(acc):
     con = get_connection()
     cursor = con.cursor(dictionary=True)
@@ -91,9 +131,11 @@ def get_user(acc):
     con.close()
 
     if user:
-        return user
+        return jsonify(user)
     else:
-        return {"error": "User not found"}
+        return jsonify({"error": "User not found"})
+
+
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     app.run(debug=True)
