@@ -42,9 +42,9 @@ def get_transactions(acc):
     cursor = con.cursor()
 
     cursor.execute(
-    "SELECT Type, Amount, Transaction_Time FROM transactions WHERE Account_Number=%s ORDER BY Transaction_Time DESC LIMIT 20",
-    (acc,)
-)
+        "SELECT type, amount, date FROM transactions WHERE account_number=%s ORDER BY date DESC LIMIT 20",
+        (acc,)
+    )
 
     data = cursor.fetchall()
     con.close()
@@ -59,16 +59,15 @@ def get_transactions(acc):
 
     return jsonify({"transactions": result})
 
-
 @app.route("/balance/<int:acc>", methods=["GET"])
 def get_balance(acc):
     con = get_connection()
     cursor = con.cursor()
 
     cursor.execute(
-        "SELECT Balance FROM holder_details WHERE Account_Number=%s",
-        (acc,)
-    )
+    "SELECT balance FROM holder_details WHERE account_number=%s",
+    (acc,)
+)
 
     data = cursor.fetchone()
     con.close()

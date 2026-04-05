@@ -44,7 +44,7 @@ function CreateAccount({ setPage }) {
         setMsg("Account Created: " + data.account_number);
 
         setTimeout(() => {
-          setPage("home");
+          setPage("dashboard");
         }, 2000);
       }
     } catch {

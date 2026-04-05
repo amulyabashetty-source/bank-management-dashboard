@@ -9,9 +9,9 @@ class BANK:
         cursor = con.cursor()
 
         cursor.execute(
-            "SELECT Account_Number FROM holder_details WHERE Account_Number=%s",
-            (acc,)
-        )
+    "SELECT account_number FROM holder_details WHERE account_number=%s",
+    (acc,)
+)
 
         data = cursor.fetchone()
         con.close()
@@ -30,15 +30,15 @@ class BANK:
 
         balance = 1000 if account_type == "saving" else 500
 
-        account_no = random.randint(10**9, 10**10 - 1)
+        account_no = random.randint(10**7, 10**9 - 1)
 
         cursor.execute("""
-    INSERT INTO holder_details
-    (account_number, account_type, name, age, mobile, aadhar, balance)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """, (
-        account_no, account_type, name, age, mobile, aadhar, balance
-    ))
+            INSERT INTO holder_details
+            (account_number, account_type, name, age, mobile, aadhar, balance)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (
+                account_no, account_type, name, age, mobile, aadhar, balance
+            ))
 
         con.commit()
         con.close()
@@ -59,13 +59,13 @@ class BANK:
 
         # ✅ Update balance
         cursor.execute(
-            "UPDATE holder_details SET Balance = Balance + %s WHERE Account_Number=%s",
+            "UPDATE holder_details SET balance = balance + %s WHERE account_number=%s",
             (amount, acc)
         )
 
         # ✅ INSERT TRANSACTION (THIS WAS MISSING)
         cursor.execute(
-            "INSERT INTO transactions(Account_Number, Type, Amount) VALUES (%s, %s, %s)",
+            "INSERT INTO transactions(account_number, type, amount, date) VALUES (%s, %s, %s, NOW())",
             (acc, "Deposit", amount)
         )
 
@@ -86,21 +86,23 @@ class BANK:
             return {"error": "Account not found"}
 
         cursor.execute(
-            "SELECT Balance FROM holder_details WHERE Account_Number=%s",
+            "SELECT balance FROM holder_details WHERE account_number=%s",
             (acc,)
         )
+
         balance = cursor.fetchone()[0]
 
         if amount > balance:
             return {"error": "Insufficient balance"}
 
         cursor.execute(
-            "UPDATE holder_details SET Balance = Balance - %s WHERE Account_Number=%s",
-            (amount, acc)
+            "SELECT balance FROM holder_details WHERE account_number=%s",
+            (acc,)
         )
 
+
         cursor.execute(
-            "INSERT INTO transactions(Account_Number,Type,Amount) VALUES(%s,%s,%s)",
+            "INSERT INTO transactions(account_number, type, amount, date) VALUES (%s, %s, %s, NOW())",
             (acc, "Withdraw", amount)
         )
 
@@ -117,9 +119,9 @@ class BANK:
         acc = int(data["account_number"])
 
         cursor.execute(
-            "SELECT Balance FROM holder_details WHERE Account_Number=%s",
+            "SELECT balance FROM holder_details WHERE account_number=%s",
             (acc,)
-        )
+        )        
 
         result = cursor.fetchone()
         con.close()
