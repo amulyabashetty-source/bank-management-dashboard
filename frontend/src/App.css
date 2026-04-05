@@ -64,6 +64,9 @@ body {
   margin-left: 240px;
   padding: 40px;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .title {
@@ -95,6 +98,8 @@ body {
 
 /* ===== CARD ===== */
 .card {
+  max-width: 400px;
+  width: 100%;
   background: white;
   color: black;
   padding: 25px;

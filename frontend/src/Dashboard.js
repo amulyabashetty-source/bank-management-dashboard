@@ -54,7 +54,7 @@ function Dashboard() {
       setTransactions(txData.transactions || []);
       setBalance(balData.balance);
     } catch {
-      setError("Server error");
+      setError("Server waking up... please wait 10 seconds and try again");
     } finally {
       setLoading(false);
     }
