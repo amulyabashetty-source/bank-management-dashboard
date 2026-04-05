@@ -5,6 +5,7 @@ function Withdraw() {
   const [amt, setAmt] = useState("");
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
+  const [loading,setloading]=useState("false");
 
   const handleWithdraw = async () => {
     if (!acc || !amt) {
@@ -13,6 +14,7 @@ function Withdraw() {
     }
 
     try {
+      setloading(true);
       setError("");
       setMsg("");
 
@@ -25,7 +27,7 @@ function Withdraw() {
             account_number: acc,
             amount: Number(amt),
           }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -37,6 +39,8 @@ function Withdraw() {
       }
     } catch {
       setError("Server error");
+    }finally{
+      setloading(false);
     }
   };
 
@@ -57,8 +61,9 @@ function Withdraw() {
         onChange={(e) => setAmt(e.target.value)}
       />
 
-      <button onClick={handleWithdraw}>Withdraw</button>
-
+      <button onClick={handleWithdraw} disabled={loading}>
+        {loading ? "Processing..." : "Withdraw"}
+      </button>
       {msg && <p className="success">{msg}</p>}
       {error && <p className="error">{error}</p>}
     </div>

@@ -11,6 +11,7 @@ function CreateAccount({ setPage }) {
 
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (!form.name || !form.age || !form.mobile || !form.aadhar) {
@@ -19,6 +20,7 @@ function CreateAccount({ setPage }) {
     }
 
     try {
+      setLoading(true);
       setError("");
       setMsg("");
 
@@ -42,13 +44,12 @@ function CreateAccount({ setPage }) {
         setError(data.error);
       } else {
         setMsg("Account Created: " + data.account_number);
-
-        setTimeout(() => {
-          setPage("dashboard");
-        }, 2000);
       }
+
     } catch {
       setError("Server error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,17 +79,27 @@ function CreateAccount({ setPage }) {
       />
 
       <select
-        onChange={(e) =>
-          setForm({ ...form, account_type: e.target.value })
-        }
+        className="input"
+        onChange={(e) => setForm({ ...form, account_type: e.target.value })}
       >
         <option value="saving">Saving</option>
         <option value="zero">Zero</option>
       </select>
-<br/>
-      <button onClick={handleSubmit}>Create</button>
 
-      {msg && <p className="success">{msg}</p>}
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Creating..." : "Create"}
+      </button>
+
+      {/* ✅ SUCCESS UI */}
+      {msg && (
+        <div className="success-box">
+          <p>{msg}</p>
+          <button onClick={() => setPage("dashboard")}>
+            Go to Dashboard
+          </button>
+        </div>
+      )}
+
       {error && <p className="error">{error}</p>}
     </div>
   );

@@ -4,7 +4,7 @@ function Balance() {
   const [acc, setAcc] = useState("");
   const [balance, setBalance] = useState("");
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const handleCheck = async () => {
     if (!acc) {
       setError("Enter account number");
@@ -12,11 +12,12 @@ function Balance() {
     }
 
     try {
+      setLoading(true);
       setError("");
       setBalance("");
 
       const res = await fetch(
-        `https://bank-management-dashboard-dxy9.onrender.com/balance/${acc}`
+        `https://bank-management-dashboard-dxy9.onrender.com/balance/${acc}`,
       );
 
       const data = await res.json();
@@ -28,6 +29,8 @@ function Balance() {
       }
     } catch {
       setError("Server error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,9 +44,12 @@ function Balance() {
         onChange={(e) => setAcc(e.target.value)}
       />
 
-      <button onClick={handleCheck}>Check</button>
+      <button onClick={handleCheck} disabled={loading}>
+        {loading ? "Processing..." : "Check"}
+      </button>
 
       {balance && <p className="success">Balance: ₹{balance}</p>}
+
       {error && <p className="error">{error}</p>}
     </div>
   );

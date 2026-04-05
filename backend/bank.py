@@ -82,25 +82,31 @@ class BANK:
         acc = int(data["account_number"])
         amount = float(data["amount"])
 
-        if not self.account_exists(acc):
+        # check account
+        cursor.execute(
+            "SELECT balance FROM holder_details WHERE account_number=%s",
+            (acc,)
+        )
+
+        result = cursor.fetchone()
+
+        if not result:
+            con.close()
             return {"error": "Account not found"}
 
-        cursor.execute(
-            "SELECT balance FROM holder_details WHERE account_number=%s",
-            (acc,)
-        )
-
-        balance = cursor.fetchone()[0]
+        balance = result[0]
 
         if amount > balance:
+            con.close()
             return {"error": "Insufficient balance"}
 
+        # update balance
         cursor.execute(
-            "SELECT balance FROM holder_details WHERE account_number=%s",
-            (acc,)
+            "UPDATE holder_details SET balance = balance - %s WHERE account_number=%s",
+            (amount, acc)
         )
 
-
+        # insert transaction
         cursor.execute(
             "INSERT INTO transactions(account_number, type, amount, date) VALUES (%s, %s, %s, NOW())",
             (acc, "Withdraw", amount)

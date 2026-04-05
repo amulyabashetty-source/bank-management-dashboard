@@ -6,7 +6,7 @@ function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [balance, setBalance] = useState(null);
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const fetchData = async () => {
     if (!acc) {
       setError("Enter account number");
@@ -14,13 +14,18 @@ function Dashboard() {
     }
 
     try {
+      setLoading(true);
       setError("");
 
-      const res1 = await fetch(`https://bank-management-dashboard-dxy9.onrender.com/transactions/${acc}`);
-const data1 = await res1.json();
+      const res1 = await fetch(
+        `https://bank-management-dashboard-dxy9.onrender.com/transactions/${acc}`,
+      );
+      const data1 = await res1.json();
 
-const res2 = await fetch(`https://bank-management-dashboard-dxy9.onrender.com/balance/${acc}`);
-const data2 = await res2.json();
+      const res2 = await fetch(
+        `https://bank-management-dashboard-dxy9.onrender.com/balance/${acc}`,
+      );
+      const data2 = await res2.json();
 
       if (data2.error) {
         setError(data2.error);
@@ -29,33 +34,32 @@ const data2 = await res2.json();
 
       setTransactions(data1.transactions || []);
       setBalance(data2.balance);
-
     } catch {
       setError("Server error");
+    } finally {
+      setLoading(false);
     }
   };
 
   // CALCULATIONS
   const totalDeposit = transactions
-    .filter(t => t.type === "Deposit")
+    .filter((t) => t.type === "Deposit")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalWithdraw = transactions
-    .filter(t => t.type === "Withdraw")
+    .filter((t) => t.type === "Withdraw")
     .reduce((sum, t) => sum + t.amount, 0);
 
   // CHART DATA (clean)
   const chartData = [
     { type: "Deposit", amount: totalDeposit },
-    { type: "Withdraw", amount: totalWithdraw }
+    { type: "Withdraw", amount: totalWithdraw },
   ];
 
   return (
     <div className="dashboard-layout">
-
       {/* LEFT SIDE */}
       <div className="dashboard-left">
-
         {/* INPUT */}
         <div className="card input-card">
           <h2>Dashboard</h2>
@@ -66,7 +70,9 @@ const data2 = await res2.json();
             onChange={(e) => setAcc(e.target.value)}
           />
 
-          <button onClick={fetchData}>Load Data</button>
+          <button onClick={fetchData} disabled={loading}>
+            {loading ? "Loading Data..." : "Load Data"}
+          </button>
 
           {error && <p className="error">{error}</p>}
         </div>
@@ -74,7 +80,6 @@ const data2 = await res2.json();
         {/* SUMMARY */}
         {transactions.length > 0 && (
           <div className="summary-grid">
-
             <div className="summary-card">
               <p>Current Balance</p>
               <h3>₹{balance}</h3>
@@ -89,16 +94,13 @@ const data2 = await res2.json();
               <p>Total Withdraw</p>
               <h3>₹{totalWithdraw}</h3>
             </div>
-
           </div>
         )}
-
       </div>
 
       {/* RIGHT SIDE */}
       {transactions.length > 0 && (
         <div className="dashboard-right">
-
           {/* CHART */}
           <div className="card">
             <h3>Transaction Chart</h3>
@@ -136,10 +138,8 @@ const data2 = await res2.json();
               </tbody>
             </table>
           </div>
-
         </div>
       )}
-
     </div>
   );
 }

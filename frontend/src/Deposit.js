@@ -5,6 +5,7 @@ function Deposit() {
   const [amt, setAmt] = useState("");
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleDeposit = async () => {
     if (!acc || !amt) {
@@ -13,6 +14,7 @@ function Deposit() {
     }
 
     try {
+      setLoading(true);
       setError("");
       setMsg("");
 
@@ -25,7 +27,7 @@ function Deposit() {
             account_number: acc,
             amount: Number(amt),
           }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -37,6 +39,8 @@ function Deposit() {
       }
     } catch {
       setError("Server error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,8 +60,10 @@ function Deposit() {
         value={amt}
         onChange={(e) => setAmt(e.target.value)}
       />
-
-      <button onClick={handleDeposit}>Deposit</button>
+      
+      <button onClick={handleDeposit} disabled={loading}>
+        {loading ? "Processing..." : "Deposit"}
+      </button>
 
       {msg && <p className="success">{msg}</p>}
       {error && <p className="error">{error}</p>}
