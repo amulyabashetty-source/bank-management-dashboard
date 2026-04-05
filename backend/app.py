@@ -5,17 +5,8 @@ from db import get_connection
 
 app = Flask(__name__)
 
-# ✅ CORS FIX (IMPORTANT)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-
-# ✅ HANDLE PREFLIGHT (VERY IMPORTANT)
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-    return response
-
+# ✅ CORS (clean + enough)
+CORS(app)
 
 bank = BANK()
 
@@ -25,21 +16,21 @@ def home():
     return "Bank API Running"
 
 
-# ---------------- LOGIN (FIXED) ----------------
-@app.route('/login', methods=['POST', 'OPTIONS'])
+# ---------------- LOGIN ----------------
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'OPTIONS':
-        return '', 200
-
     data = request.json
     mobile = data.get("mobile")
     aadhar = data.get("aadhar")
+
+    # remove spaces from DB compare
+    aadhar = aadhar.replace(" ", "")
 
     con = get_connection()
     cursor = con.cursor(dictionary=True)
 
     cursor.execute(
-        "SELECT account_number FROM holder_details WHERE mobile=%s AND aadhar=%s",
+        "SELECT account_number FROM holder_details WHERE mobile=%s AND REPLACE(aadhar,' ','')=%s",
         (mobile, aadhar)
     )
 
@@ -73,7 +64,7 @@ def balance():
     return jsonify(bank.check_balance_api(request.json))
 
 
-# ---------------- DASHBOARD APIs ----------------
+# ---------------- DASHBOARD ----------------
 @app.route("/transactions/<int:acc>", methods=["GET"])
 def get_transactions(acc):
     con = get_connection()

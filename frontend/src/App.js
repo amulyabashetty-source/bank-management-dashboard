@@ -21,11 +21,10 @@ function App() {
     localStorage.getItem("account") || ""
   );
 
-  // ✅ FIX: pass setPage also
-  if (!account) {
-    return <Login setAccount={setAccount} setPage={setPage} />;
-  }
-
+  // FIX: pass setPage also
+  if (!account && page !== "create") {
+  return <Login setAccount={setAccount} setPage={setPage} />;
+}
   return (
     <div className="app-layout">
       {/* SIDEBAR */}
