@@ -165,3 +165,38 @@ button:disabled {
     margin-left: 0;
   }
 }
+
+/* ===== CUSTOM SELECT (FINAL FIX) ===== */
+.custom-select {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+
+  /* remove default browser style */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* custom arrow */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='20' viewBox='0 0 24 24' width='20'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+/* focus */
+.custom-select:focus {
+  border-color: #4CAF50;
+  background: white;
+}
+
+/* remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
