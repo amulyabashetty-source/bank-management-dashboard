@@ -76,7 +76,6 @@ function App() {
       <div className="main">
         <div className="content-wrapper">
           <h1 className="title">Banking Application</h1>
-
           {page === "dashboard" && <Dashboard />}
           {page === "create" && <CreateAccount setPage={setPage} />}
           {page === "deposit" && <Deposit />}

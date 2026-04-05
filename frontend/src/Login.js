@@ -17,8 +17,11 @@ function Login({ setAccount }) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mobile, aadhar }),
-        }
+          body: JSON.stringify({
+            mobile: mobile.trim(),
+            aadhar: aadhar.replace(/\s/g, ""),
+          }),
+        },
       );
 
       const data = await res.json();
@@ -35,26 +38,26 @@ function Login({ setAccount }) {
   };
 
   return (
-  <div className="login-container">
-    <div className="login-card">
-      <h2>Login</h2>
+    <div className="login-container">
+      <div className="login-card">
+        <h2>Login</h2>
 
-      <input
-        placeholder="Mobile"
-        onChange={(e) => setMobile(e.target.value)}
-      />
+        <input
+          placeholder="Mobile"
+          onChange={(e) => setMobile(e.target.value)}
+        />
 
-      <input
-        placeholder="Aadhar"
-        onChange={(e) => setAadhar(e.target.value)}
-      />
+        <input
+          placeholder="Aadhar"
+          onChange={(e) => setAadhar(e.target.value)}
+        />
 
-      <button onClick={handleLogin}>Login</button>
+        <button onClick={handleLogin}>Login</button>
 
-      {error && <p className="error">{error}</p>}
+        {error && <p className="error">{error}</p>}
+      </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default Login;
